@@ -18,7 +18,6 @@ cPlyReader::~cPlyReader()
 bool cPlyReader::Read(const string &fileName)
 {
 	using namespace std;
-	int dataPtrSize = 0;
 
 	Clear();
 
@@ -58,9 +57,13 @@ bool cPlyReader::Read(const string &fileName)
 		}
 	}
 
+	if (!isHeaderRead)
+		return false;
+
 
 #pragma pack(push, 1)
-	struct sVtx {
+	struct sVtx 
+	{
 		float x, y, z;
 		unsigned char r, g, b;
 	};
