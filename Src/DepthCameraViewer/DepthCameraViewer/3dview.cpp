@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "3dview.h"
+#include "plyreader.h"
 
 using namespace graphic;
 using namespace framework;
@@ -35,28 +36,30 @@ bool c3DView::Init(cRenderer &renderer)
 	m_ground.Create(renderer, 100, 100, 10, 10);
 	m_lineList.Create(renderer, 100);
 
-	using namespace std;
-	const string fileName = "../media/-_20180312-111911_0.dat";
-	const int fsize = (int)common::FileSize(fileName);
-	
-	ifstream ifs(fileName, ios::binary);
-	if (ifs.is_open())
+	cPlyReader reader;
+	if (reader.Read("../media/blank1.ply"))
 	{
-		BYTE *pbuff = new BYTE[fsize];
-		ZeroMemory(pbuff, fsize);
-		ifs.read((char*)pbuff, fsize);
-
-		m_vtxBuff.Create(renderer, 640 * 480, sizeof(sVertex), pbuff);
-
-		//float *xyz = (float*)pbuff;
-		//for (int i = 0; i < 640 * 480; ++i)
-		//{
-		//	Vector3 *p = (Vector3*)(xyz + (i * 3)); // x-y-z
-		//	int a = 0;
-		//}		
-
-		delete[] pbuff;
+		m_vtxBuff.Create(renderer
+			, reader.m_vertices.size()
+			, sizeof(sVertex)
+			, &reader.m_vertices[0]);
 	}
+
+	//using namespace std;
+	//const string fileName = "../media/-_20180312-111908_0.dat";
+	//const int fsize = (int)common::FileSize(fileName);
+	//
+	//ifstream ifs(fileName, ios::binary);
+	//if (ifs.is_open())
+	//{
+	//	BYTE *pbuff = new BYTE[fsize];
+	//	ZeroMemory(pbuff, fsize);
+	//	ifs.read((char*)pbuff, fsize);
+
+	//	m_vtxBuff.Create(renderer, 640 * 480, sizeof(sVertex), pbuff);
+
+	//	delete[] pbuff;
+	//}
 
 	return true;
 }

@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="3dview.cpp" />
     <ClCompile Include="depthcameraviewer.cpp" />
+    <ClCompile Include="plyreader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="3dview.h" />
     <ClInclude Include="depthcameraviewer.h" />
+    <ClInclude Include="plyreader.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
