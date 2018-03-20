@@ -37,7 +37,7 @@ bool c3DView::Init(cRenderer &renderer)
 	m_lineList.Create(renderer, 100);
 
 	cPlyReader reader;
-	if (reader.Read("../media/blank1.ply"))
+	if (reader.Read("../media/depth/blank1.ply"))
 	{
 		m_vtxBuff.Create(renderer
 			, reader.m_vertices.size()
