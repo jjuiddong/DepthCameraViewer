@@ -12,6 +12,7 @@ c3DView::c3DView(const string &name)
 	, m_groundPlane2(Vector3(0, -1, 0), 0)
 	, m_showGround(true)
 	, m_incT(0)
+	, m_showTessellation(true)
 {
 }
 
@@ -44,6 +45,9 @@ bool c3DView::Init(cRenderer &renderer)
 			, sizeof(sVertex)
 			, &reader.m_vertices[0]);
 	}
+
+	m_shader.Create(renderer, "../media/shader11/tess-pos.fxo", "Unlit"
+		, eVertexType::POSITION);
 
 	//using namespace std;
 	//const string fileName = "../media/-_20180312-111908_0.dat";
@@ -83,9 +87,11 @@ void c3DView::OnPreRender(const float deltaSeconds)
 	if (m_renderTarget.Begin(renderer))
 	{
 		CommonStates states(renderer.GetDevice());
-		renderer.GetDevContext()->RSSetState(states.Wireframe());
+		//renderer.GetDevContext()->RSSetState(states.Wireframe());
+		renderer.GetDevContext()->RSSetState(states.CullNone());
 
-		cShader11 *shader = renderer.m_shaderMgr.FindShader(eVertexType::POSITION);
+		//cShader11 *shader = renderer.m_shaderMgr.FindShader(eVertexType::POSITION);
+		cShader11 *shader = m_showTessellation ? &m_shader : renderer.m_shaderMgr.FindShader(eVertexType::POSITION);
 		assert(shader);
 		shader->SetTechnique("Unlit");
 		shader->Begin();
@@ -104,13 +110,24 @@ void c3DView::OnPreRender(const float deltaSeconds)
 		renderer.m_cbMaterial.Update(renderer, 2);
 
 		m_vtxBuff.Bind(renderer);
-		renderer.GetDevContext()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
-		renderer.GetDevContext()->DrawInstanced(640*480, 1, 0, 0);
+
+		if (m_showTessellation)
+		{
+			renderer.GetDevContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST);
+			renderer.GetDevContext()->Draw(m_vtxBuff.GetVertexCount(), 0);
+		}
+		else
+		{
+			renderer.GetDevContext()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+			renderer.GetDevContext()->DrawInstanced(640*480, 1, 0, 0);
+		}
 
 		if (m_showGround)
 			m_ground.Render(renderer);
+
 	}
 	m_renderTarget.End(renderer);
+	renderer.UnbindShaderAll();
 }
 
 
@@ -296,6 +313,7 @@ void c3DView::OnEventProc(const sf::Event &evt)
 			break;
 
 		case sf::Keyboard::Space:
+			m_showTessellation = !m_showTessellation;
 			break;
 
 		//case sf::Keyboard::Left: m_camera.MoveRight(-0.5f); break;

@@ -35,8 +35,10 @@ public:
 	graphic::cGridLine m_ground;
 	graphic::cRenderTarget m_renderTarget;
 	bool m_showGround;
+	bool m_showTessellation;
 	graphic::cDbgLineList m_lineList;
 	graphic::cVertexBuffer m_vtxBuff;
+	graphic::cShader11 m_shader;
 
 	// MouseMove Variable
 	POINT m_viewPos;
